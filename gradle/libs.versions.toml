@@ -1,0 +1,100 @@
+[versions]
+
+#Common
+projectNameSpace = "app.mat.library"
+versionCode = "1"
+versionName = "1.0.0"
+packagingExclusionSet = "/META-INF/{AL2.0,LGPL2.1}"
+
+#Android
+androidCompileSdkVersion = "34"
+androidMinimumSdkVersion = "24"
+androidTargetSdkVersion = "34"
+androidReleaseBuildName = "release"
+androidDebugBuildName = "debug"
+
+#Desktop
+desktopBasePackageName = "ComposeApp"
+desktopMainClass = "app.mat.library.MainKt"
+desktopJvmName = "desktop"
+
+#Libraries
+coreVersion = "1.15.0"
+coroutinesSwingVersion = "1.9.0"
+koinVersion = "4.0.0"
+ktorVersion = "3.0.0"
+sqliteVersion = "2.5.0-alpha11"
+lifecycleVersion = "2.8.3"
+activityComposeVersion = "1.9.3"
+appcompatVersion = "1.7.0"
+navigationVersion = "2.8.0-alpha10"
+constraintlayoutVersion = "2.2.0"
+coilVersion = "3.0.0-rc02"
+
+#Plugins
+androidGradlePluginVersion = "8.5.2"
+composeMultiplatformVersion = "1.7.0"
+kotlinMultiplatformVersion = "2.1.0"
+kotlinSerializationVersion = "1.7.3"
+kspVersion = "2.1.0-1.0.29"
+roomVersion = "2.7.0-alpha11"
+
+[libraries]
+
+core = { group = "androidx.core", name = "core-ktx", version.ref = "coreVersion" }
+coroutinesSwing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "coroutinesSwingVersion" }
+kotlinxSerializationJson = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinSerializationVersion" }
+koinAndroid = { module = "io.insert-koin:koin-android", version.ref = "koinVersion" }
+koinAndroidxCompose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinVersion" }
+koinCore = { module = "io.insert-koin:koin-core", version.ref = "koinVersion" }
+koinCompose = { module = "io.insert-koin:koin-compose", version.ref = "koinVersion" }
+koinComposeViewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koinVersion" }
+ktorClientCore = { module = "io.ktor:ktor-client-core", version.ref = "ktorVersion" }
+ktorClientOkhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktorVersion" }
+ktorClientDarwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktorVersion" }
+ktorClientContentNegotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktorVersion" }
+ktorClientLogging = { module = "io.ktor:ktor-client-logging", version.ref = "ktorVersion" }
+ktorSerializationKotlinxJson = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktorVersion" }
+ktorClientAuth = { module = "io.ktor:ktor-client-auth", version.ref = "ktorVersion" }
+sqlite = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqliteVersion" }
+roomRuntime = { group = "androidx.room", name = "room-runtime", version.ref = "roomVersion" }
+roomCompiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomVersion" }
+lifecycleViewModel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "lifecycleVersion" }
+lifecycleRuntimeCompose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleVersion" }
+activityCompose = { module = "androidx.activity:activity-compose", version.ref = "activityComposeVersion" }
+appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompatVersion" }
+navigation = { group = "org.jetbrains.androidx.navigation", name = "navigation-compose", version.ref = "navigationVersion" }
+constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayoutVersion" }
+coil = { module = "io.coil-kt.coil3:coil", version.ref = "coilVersion" }
+coilCompose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilVersion" }
+coilComposeCore = { module = "io.coil-kt.coil3:coil-compose-core", version.ref = "coilVersion" }
+coilNetworkKtor2 = { module = "io.coil-kt.coil3:coil-network-ktor2", version.ref = "coilVersion" }
+coilNetworkKtor3 = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coilVersion" }
+
+[plugins]
+
+androidApplicationPlugin = { id = "com.android.application", version.ref = "androidGradlePluginVersion" }
+androidLibraryPlugin = { id = "com.android.library", version.ref = "androidGradlePluginVersion" }
+composeMultiplatformPlugin = { id = "org.jetbrains.compose", version.ref = "composeMultiplatformVersion" }
+composeCompilerPlugin = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlinMultiplatformVersion" }
+kotlinMultiplatformPlugin = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlinMultiplatformVersion" }
+kotlinSerializationPlugin = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinMultiplatformVersion" }
+kspPlugin = { id = "com.google.devtools.ksp", version.ref = "kspVersion" }
+roomPlugin = { id = "androidx.room", version.ref = "roomVersion" }
+
+[bundles]
+
+ktor = [
+    "ktorClientCore",
+    "ktorClientContentNegotiation",
+    "ktorClientAuth",
+    "ktorClientLogging",
+    "ktorSerializationKotlinxJson",
+]
+coil = [
+    "coil",
+    "coilCompose",
+    "coilComposeCore",
+    "coilNetworkKtor2",
+    "coilNetworkKtor3"
+]

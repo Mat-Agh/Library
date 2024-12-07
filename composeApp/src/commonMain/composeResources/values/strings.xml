@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <!--    region Titles-->
+    <string name="title_title">Title</string>
+    <string name="title_search_results">Search results</string>
+    <string name="title_favorites">Favorites</string>
+    <string name="title_book_cover">Book cover</string>
+    <string name="title_rating">Rating</string>
+    <string name="title_pages">Pages</string>
+    <string name="title_languages">Languages</string>
+    <string name="title_synopsis">Synopsis</string>
+    <!--    endregion Titles-->
+
+    <!--    region UI Hints-->
+    <string name="ui_hint_clear_search_field">Clear search</string>
+    <string name="ui_hint_go_back">Go back</string>
+    <string name="ui_hint_add_favorite">Add Favorite</string>
+    <string name="ui_hint_remove_favorite">Remove Favorite</string>
+    <!--    endregion UI Hints-->
+
+    <!--    region Field Hints-->
+    <string name="field_hint_search">Search...</string>
+    <!--    endregion Field Hints-->
+
+    <!--    region Messages-->
+    <string name="message_search_result_empty">Search result is empty.</string>
+    <string name="message_favorite_books_empty">You haven't added any favorite books yet!</string>
+    <string name="message_disk_is_full">Oops, it seems like your disk is full.</string>
+    <string name="message_unknown">Oops, something went wrong.</string>
+    <string name="message_no_internet">Couldn't reach server, please check your internet connection.</string>
+    <string name="message_too_many_requests">your quota seems to be exceeded.</string>
+    <string name="message_serialization">Couldn't understand the data.</string>
+    <string name="message_request_time_out">The request timed out.</string>
+    <string name="message_description_not_available">Description not available.</string>
+    <!--    endregion Messages-->
+
+</resources>
