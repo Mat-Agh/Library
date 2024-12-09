@@ -7,13 +7,15 @@ import app.mat.library.feature.book.presentation.state.BookState
 data class BookDetailScreenState(
     val isLoading: Boolean,
     val isFavorite: Boolean,
-    val bookState: BookState?
+    val bookState: BookState?,
+    val bookWorkID: String?
 ) {
     companion object {
         val default = BookDetailScreenState(
             isLoading = true,
             isFavorite = false,
-            bookState = null
+            bookState = null,
+            bookWorkID = null
         )
     }
 }

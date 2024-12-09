@@ -1,4 +1,4 @@
-package app.mat.library.feature.book.data.mapper.BookMapper
+package app.mat.library.feature.book.data.mapper.bookMapper
 
 import app.mat.library.feature.book.data.remote.dto.SearchedBookDto
 import app.mat.library.feature.book.domain.model.BookModel
@@ -6,7 +6,9 @@ import app.mat.library.feature.book.presentation.state.BookState
 import app.mat.library.feature.core.data.parameter.ServiceParameter
 
 fun SearchedBookDto.toBookModel(): BookModel = BookModel(
-    id = id,
+    id = id.substringAfterLast(
+        delimiter = "/"
+    ),
     title = title,
     imageAddress = if (coverKey != null) {
         "${ServiceParameter.Core.BASE_OLD_IMAGE_URL}${coverKey}${ServiceParameter.Core.IMAGE_SIZE}${ServiceParameter.Core.IMAGE_FORMAT}"

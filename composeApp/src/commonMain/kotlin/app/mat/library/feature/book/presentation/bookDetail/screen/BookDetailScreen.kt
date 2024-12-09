@@ -274,14 +274,17 @@ private fun BookDetailScreen(
                         } else {
                             screenState.bookState.description
                         },
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.bodyMedium,
                         color = if (screenState.bookState.description.isNullOrBlank()) {
                             Color.Black.copy(
                                 alpha = 0.4f
                             )
                         } else {
-                            Color.Black
+                            Color.Black.copy(
+                                alpha = 0.8f
+                            )
                         },
+                        textAlign = TextAlign.Justify,
                         modifier = Modifier
                             .align(
                                 alignment = Alignment.Start
@@ -292,6 +295,13 @@ private fun BookDetailScreen(
                             )
                     )
                 }
+
+                Spacer(
+                    modifier = Modifier
+                        .height(
+                            height = 24.dp
+                        )
+                )
             }
         }
     }

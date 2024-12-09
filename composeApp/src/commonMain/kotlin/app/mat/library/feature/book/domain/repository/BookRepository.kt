@@ -8,4 +8,8 @@ interface BookRepository {
     suspend fun searchRemote(
         query: String
     ): Result<List<BookModel>, DataError.Remote>
+
+    suspend fun getBookDescription(
+        bookWorkId: String
+    ): Result<String?, DataError>
 }

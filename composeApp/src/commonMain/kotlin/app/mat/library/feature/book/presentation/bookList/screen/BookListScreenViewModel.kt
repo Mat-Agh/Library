@@ -2,7 +2,7 @@ package app.mat.library.feature.book.presentation.bookList.screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import app.mat.library.feature.book.data.mapper.BookMapper.toBookState
+import app.mat.library.feature.book.data.mapper.bookMapper.toBookState
 import app.mat.library.feature.book.domain.usecase.SearchBookRemoteUseCase
 import app.mat.library.feature.book.presentation.bookList.action.BookListScreenAction
 import app.mat.library.feature.book.presentation.bookList.state.BookListScreenState

@@ -1,10 +1,11 @@
 package app.mat.library.feature.book.data.remote.dto
 
+import app.mat.library.feature.book.data.remote.serializer.BookWorkDtoSerializer
 import kotlinx.serialization.Serializable
 
 @Serializable(
-    with =
+    with = BookWorkDtoSerializer::class
 )
-data class BookDescriptionDto(
+data class BookWorkDto(
     val description: String? = null
 )

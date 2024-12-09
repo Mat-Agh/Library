@@ -15,6 +15,10 @@ data object ServiceParameter {
 
     data object Search {
         const val PATH = "search.json/"
-        const val SEARCH_QUERY_PATH = "search.json?title="
+    }
+
+    data object BookWork {
+        const val ROUTE = "works/"
+        const val EXTENSION = ".json"
     }
 }

@@ -1,5 +1,6 @@
 package app.mat.library.feature.book.data.remote.network.dataSource
 
+import app.mat.library.feature.book.data.remote.dto.BookWorkDto
 import app.mat.library.feature.book.data.remote.dto.SearchResponseDto
 import app.mat.library.feature.core.data.extension.safeApiCall
 import app.mat.library.feature.core.data.parameter.ServiceParameter
@@ -15,7 +16,7 @@ class BookRemoteDataSourceImpl(
     override suspend fun search(
         query: String,
         resultLimit: Int?
-    ): Result<SearchResponseDto, DataError.Remote> = safeApiCall {
+    ): Result<SearchResponseDto, DataError.Remote> = safeApiCall<SearchResponseDto> {
         httpClient.get(
             urlString = "${ServiceParameter.Core.BASE_API_URL}${ServiceParameter.Search.PATH}"
         ) {
@@ -34,6 +35,23 @@ class BookRemoteDataSourceImpl(
             parameter(
                 key = "fields",
                 value = "key,title,language,cover_i,author_key,author_name,cover_edition_key,first_publish_year,ratings_average,ratings_count,number_of_pages_median,edition_count"
+            )
+        }
+    }
+
+    override suspend fun getBookDetails(
+        bookWorkId: String
+    ): Result<BookWorkDto, DataError.Remote> = safeApiCall<BookWorkDto> {
+        httpClient.get(
+            urlString = "${ServiceParameter.Core.BASE_API_URL}${ServiceParameter.BookWork.ROUTE}${bookWorkId}${ServiceParameter.BookWork.EXTENSION}"
+        ) {
+            parameter(
+                key = "ids",
+                value = bookWorkId
+            )
+            parameter(
+                key = "fields",
+                value = "description"
             )
         }
     }

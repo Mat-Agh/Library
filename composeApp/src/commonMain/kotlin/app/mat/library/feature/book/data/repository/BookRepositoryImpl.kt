@@ -1,6 +1,6 @@
 package app.mat.library.feature.book.data.repository
 
-import app.mat.library.feature.book.data.mapper.BookMapper.toBookModel
+import app.mat.library.feature.book.data.mapper.bookMapper.toBookModel
 import app.mat.library.feature.book.data.remote.network.dataSource.BookRemoteDataSource
 import app.mat.library.feature.book.domain.model.BookModel
 import app.mat.library.feature.book.domain.repository.BookRepository
@@ -19,5 +19,13 @@ class BookRepositoryImpl(
         dto.searchedBookList?.map { searchedBookDto ->
             searchedBookDto.toBookModel()
         } ?: emptyList()
+    }
+
+    override suspend fun getBookDescription(
+        bookWorkId: String
+    ): Result<String?, DataError> = bookRemoteDataSource.getBookDetails(
+        bookWorkId = bookWorkId
+    ).map {
+        it.description
     }
 }
