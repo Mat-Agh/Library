@@ -38,6 +38,7 @@ kotlinMultiplatformVersion = "2.1.0"
 kotlinSerializationVersion = "1.7.3"
 kspVersion = "2.1.0-1.0.29"
 roomVersion = "2.7.0-alpha11"
+firebaseDatabaseKtxVersion = "21.0.0"
 
 [libraries]
 
@@ -70,6 +71,7 @@ coilCompose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilVer
 coilComposeCore = { module = "io.coil-kt.coil3:coil-compose-core", version.ref = "coilVersion" }
 coilNetworkKtor2 = { module = "io.coil-kt.coil3:coil-network-ktor2", version.ref = "coilVersion" }
 coilNetworkKtor3 = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coilVersion" }
+firebaseDatabaseKtx = { group = "com.google.firebase", name = "firebase-database-ktx", version.ref = "firebaseDatabaseKtxVersion" }
 
 [plugins]
 

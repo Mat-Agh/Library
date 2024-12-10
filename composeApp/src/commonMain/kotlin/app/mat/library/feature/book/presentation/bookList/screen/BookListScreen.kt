@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -31,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -59,47 +62,6 @@ fun BookListScreenRoot(
 ) {
     val screenState by viewModel.screenState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(true) {
-        bookViewModel.onBookSelected(
-            bookState = null
-        )
-    }
-
-    BookListScreen(
-        stateProvider = {
-            screenState
-        },
-        onAction = { action ->
-            when (action) {
-                is BookListScreenAction.OnBookClicked -> {
-                    val bookState = action.bookState
-
-                    bookViewModel.onBookSelected(
-                        bookState = bookState
-                    )
-
-                    navHostControllerProvider().navigate(
-                        route = BookGraph.BookDetailScreen(
-                            id = bookState.id
-                        )
-                    )
-                }
-
-                else -> Unit
-            }
-
-            viewModel.onAction(
-                action = action
-            )
-        }
-    )
-}
-
-@Composable
-fun BookListScreen(
-    stateProvider: () -> BookListScreenState,
-    onAction: (BookListScreenAction) -> Unit
-) {
     val keyboardController by rememberUpdatedState(
         newValue = LocalSoftwareKeyboardController.current
     )
@@ -112,25 +74,55 @@ fun BookListScreen(
 
     val favoritesLazyListState = rememberLazyListState()
 
-    LaunchedEffect(stateProvider().searchResultList) {
-        if (stateProvider().searchResultList.isNotEmpty()) {
+    val onAction: (BookListScreenAction) -> Unit = { action ->
+        when (action) {
+            is BookListScreenAction.OnBookClicked -> {
+                val bookState = action.bookState
+
+                bookViewModel.onBookSelected(
+                    bookState = bookState
+                )
+
+                navHostControllerProvider().navigate(
+                    route = BookGraph.BookDetailScreen(
+                        id = bookState.id
+                    )
+                )
+            }
+
+            else -> Unit
+        }
+
+        viewModel.onAction(
+            action = action
+        )
+    }
+
+    LaunchedEffect(true) {
+        bookViewModel.onBookSelected(
+            bookState = null
+        )
+    }
+
+    LaunchedEffect(screenState.searchResultList) {
+        if (screenState.searchResultList.isNotEmpty()) {
             searchResultLazyListState.animateScrollToItem(
                 index = 0
             )
         }
     }
 
-    LaunchedEffect(stateProvider().favoriteBookList) {
-        if (stateProvider().favoriteBookList.isNotEmpty()) {
+    LaunchedEffect(screenState.favoriteBookList) {
+        if (screenState.favoriteBookList.isNotEmpty()) {
             favoritesLazyListState.animateScrollToItem(
                 index = 0
             )
         }
     }
 
-    LaunchedEffect(stateProvider().selectedTabIndex) {
+    LaunchedEffect(screenState.selectedTabIndex) {
         pagerState.animateScrollToPage(
-            page = stateProvider().selectedTabIndex
+            page = screenState.selectedTabIndex
         )
     }
 
@@ -142,6 +134,35 @@ fun BookListScreen(
         )
     }
 
+    BookListScreen(
+        keyboardControllerProvider = {
+            keyboardController
+        },
+        stateProvider = {
+            screenState
+        },
+        pagerStateProvider = {
+            pagerState
+        },
+        searchResultLazyListStateProvider = {
+            searchResultLazyListState
+        },
+        favoriteLazyListStateProvider = {
+            favoritesLazyListState
+        },
+        onAction = onAction
+    )
+}
+
+@Composable
+fun BookListScreen(
+    keyboardControllerProvider: () -> SoftwareKeyboardController?,
+    stateProvider: () -> BookListScreenState,
+    pagerStateProvider: () -> PagerState,
+    searchResultLazyListStateProvider: @Composable () -> LazyListState,
+    favoriteLazyListStateProvider: @Composable () -> LazyListState,
+    onAction: (BookListScreenAction) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -161,7 +182,11 @@ fun BookListScreen(
                 )
             },
             onKeyboardSearchClicked = {
-                keyboardController?.hide()
+                keyboardControllerProvider()?.hide()
+
+                onAction(
+                    BookListScreenAction.OnKeyboardSearchClicked
+                )
             },
             modifier = Modifier
                 .widthIn(
@@ -289,7 +314,7 @@ fun BookListScreen(
                 )
 
                 HorizontalPager(
-                    state = pagerState,
+                    state = pagerStateProvider(),
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(
@@ -349,9 +374,7 @@ fun BookListScreen(
                                                 },
                                                 modifier = Modifier
                                                     .fillMaxSize(),
-                                                scrollStateProvider = {
-                                                    searchResultLazyListState
-                                                }
+                                                scrollStateProvider = searchResultLazyListStateProvider
                                             )
                                         }
                                     }
@@ -386,9 +409,7 @@ fun BookListScreen(
                                         },
                                         modifier = Modifier
                                             .fillMaxSize(),
-                                        scrollStateProvider = {
-                                            favoritesLazyListState
-                                        }
+                                        scrollStateProvider = favoriteLazyListStateProvider
                                     )
                                 }
                             }

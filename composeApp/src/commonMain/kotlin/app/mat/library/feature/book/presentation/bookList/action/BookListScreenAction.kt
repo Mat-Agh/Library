@@ -3,6 +3,8 @@ package app.mat.library.feature.book.presentation.bookList.action
 import app.mat.library.feature.book.presentation.state.BookState
 
 sealed interface BookListScreenAction {
+    data object OnKeyboardSearchClicked : BookListScreenAction
+
     data class OnSearchQueryChanged(
         val searchQuery: String
     ) : BookListScreenAction

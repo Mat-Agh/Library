@@ -1,5 +1,7 @@
 package app.mat.library.feature.core.presentation.navigation.host
 
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,7 +34,28 @@ fun NavHostComponent(
         navigation<BookGraph.Root>(
             startDestination = BookGraph.BookListScreen,
         ) {
-            composable<BookGraph.BookListScreen> { backStackEntry ->
+            composable<BookGraph.BookListScreen>(
+                enterTransition = {
+                    slideInHorizontally { initialOffset ->
+                        initialOffset
+                    }
+                },
+                exitTransition = {
+                    slideOutHorizontally { initialOffset ->
+                        initialOffset
+                    }
+                },
+                popEnterTransition = {
+                    slideInHorizontally { initialOffset ->
+                        initialOffset
+                    }
+                },
+                popExitTransition = {
+                    slideOutHorizontally { initialOffset ->
+                        initialOffset
+                    }
+                }
+            ) { backStackEntry ->
                 val viewModel: BookListScreenViewModel = koinViewModel()
 
                 val bookViewModel: BookViewModel = backStackEntry.getSharedKoinViewModel(
@@ -46,7 +69,28 @@ fun NavHostComponent(
                 )
             }
 
-            composable<BookGraph.BookDetailScreen> { backStackEntry ->
+            composable<BookGraph.BookDetailScreen>(
+                enterTransition = {
+                    slideInHorizontally { initialOffset ->
+                        initialOffset
+                    }
+                },
+                exitTransition = {
+                    slideOutHorizontally { initialOffset ->
+                        initialOffset
+                    }
+                },
+                popEnterTransition = {
+                    slideInHorizontally { initialOffset ->
+                        initialOffset
+                    }
+                },
+                popExitTransition = {
+                    slideOutHorizontally { initialOffset ->
+                        initialOffset
+                    }
+                }
+            ) { backStackEntry ->
                 val bookViewModel: BookViewModel = backStackEntry.getSharedKoinViewModel(
                     navHostController = navHostControllerProvider()
                 )

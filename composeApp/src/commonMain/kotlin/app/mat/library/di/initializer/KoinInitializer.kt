@@ -12,12 +12,10 @@ private val moduleList = listOf(
 
 fun initializeKoin(
     configuration: KoinAppDeclaration? = null
-) {
-    startKoin {
-        configuration?.invoke(this)
+) = startKoin {
+    configuration?.invoke(this)
 
-        modules(
-            modules = moduleList
-        )
-    }
+    modules(
+        modules = moduleList
+    )
 }

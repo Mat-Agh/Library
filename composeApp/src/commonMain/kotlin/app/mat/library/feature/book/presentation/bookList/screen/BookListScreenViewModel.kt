@@ -3,7 +3,8 @@ package app.mat.library.feature.book.presentation.bookList.screen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.mat.library.feature.book.data.mapper.bookMapper.toBookState
-import app.mat.library.feature.book.domain.usecase.SearchBookRemoteUseCase
+import app.mat.library.feature.book.domain.usecase.local.favorite.get.GetFavoriteBookListLocalUseCase
+import app.mat.library.feature.book.domain.usecase.remote.search.SearchBookRemoteUseCase
 import app.mat.library.feature.book.presentation.bookList.action.BookListScreenAction
 import app.mat.library.feature.book.presentation.bookList.state.BookListScreenState
 import app.mat.library.feature.book.presentation.state.BookState
@@ -28,7 +29,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class BookListScreenViewModel(
-    private val searchBookRemoteUseCase: SearchBookRemoteUseCase
+    private val searchBookRemoteUseCase: SearchBookRemoteUseCase,
+    private val getFavoriteBookListLocalUseCase: GetFavoriteBookListLocalUseCase
 ) : ViewModel() {
     //region Variables
     private val _cachedBookList: MutableStateFlow<List<BookState>> = MutableStateFlow(
@@ -44,6 +46,8 @@ class BookListScreenViewModel(
             if (_cachedBookList.value.isEmpty()) {
                 observeSearchQueryChanges()
             }
+
+            observeFavoriteBookList()
         }
         .stateIn(
             scope = viewModelScope,
@@ -56,17 +60,14 @@ class BookListScreenViewModel(
     //endregion Variables
 
     //region Jobs
-    private var searchJob: Job? = null
+    private var favoriteBookListObserverJob: Job? = null
+    private var searchBookJob: Job? = null
     //endregion Jobs
 
     //region Public Methods
     fun onAction(
         action: BookListScreenAction
     ) = when (action) {
-        is BookListScreenAction.OnBookClicked -> {
-
-        }
-
         is BookListScreenAction.OnSearchQueryChanged -> {
             _screenState.update { screenState ->
                 screenState.copy(
@@ -82,6 +83,14 @@ class BookListScreenViewModel(
                 )
             }
         }
+
+        BookListScreenAction.OnKeyboardSearchClicked -> {
+            search(
+                query = _screenState.value.query
+            )
+        }
+
+        else -> Unit
     }
     //endregion Public Methods
 
@@ -106,9 +115,7 @@ class BookListScreenViewModel(
                     }
 
                     query.length >= 2 -> {
-                        searchJob?.cancel()
-
-                        searchJob = search(
+                        search(
                             query = query
                         )
                     }
@@ -119,42 +126,66 @@ class BookListScreenViewModel(
             )
     }
 
-    private fun search(
-        query: String
-    ) = viewModelScope.launch(
-        context = Dispatchers.IO
-    ) {
-        _screenState.update { screenState ->
-            screenState.copy(
-                isLoading = true
+    private fun observeFavoriteBookList() {
+        favoriteBookListObserverJob?.cancel()
+
+        favoriteBookListObserverJob = viewModelScope.launch(
+            context = Dispatchers.IO
+        ) {
+            getFavoriteBookListLocalUseCase().onEach { favoriteBookList ->
+                _screenState.update { screenState ->
+                    screenState.copy(
+                        favoriteBookList = favoriteBookList.map { bookModel ->
+                            bookModel.toBookState()
+                        }
+                    )
+                }
+            }.launchIn(
+                scope = viewModelScope
             )
         }
+    }
 
-        searchBookRemoteUseCase(
-            query = query
-        ).onSuccess { searchResultList ->
-            val bookStateList = searchResultList.map { bookModel ->
-                bookModel.toBookState()
-            }
+    private fun search(
+        query: String
+    ) {
+        searchBookJob?.cancel()
 
-            _cachedBookList.update {
-                bookStateList
-            }
-
+        searchBookJob = viewModelScope.launch(
+            context = Dispatchers.IO
+        ) {
             _screenState.update { screenState ->
                 screenState.copy(
-                    isLoading = false,
-                    errorMessage = null,
-                    searchResultList = bookStateList
+                    isLoading = true
                 )
             }
-        }.onError { error ->
-            _screenState.update { screenState ->
-                screenState.copy(
-                    searchResultList = emptyList(),
-                    isLoading = false,
-                    errorMessage = error.toUiText()
-                )
+
+            searchBookRemoteUseCase(
+                query = query
+            ).onSuccess { searchResultList ->
+                val bookStateList = searchResultList.map { bookModel ->
+                    bookModel.toBookState()
+                }
+
+                _cachedBookList.update {
+                    bookStateList
+                }
+
+                _screenState.update { screenState ->
+                    screenState.copy(
+                        isLoading = false,
+                        errorMessage = null,
+                        searchResultList = bookStateList
+                    )
+                }
+            }.onError { error ->
+                _screenState.update { screenState ->
+                    screenState.copy(
+                        searchResultList = emptyList(),
+                        isLoading = false,
+                        errorMessage = error.toUiText()
+                    )
+                }
             }
         }
     }

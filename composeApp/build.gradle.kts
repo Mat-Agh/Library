@@ -254,6 +254,7 @@ compose.desktop {
 }
 
 dependencies {
+    implementation(libs.firebaseDatabaseKtx)
     debugImplementation(
         compose.uiTooling
     )

@@ -1,5 +1,6 @@
 package app.mat.library.feature.book.data.mapper.bookMapper
 
+import app.mat.library.feature.book.data.local.entity.FavoriteBookEntity
 import app.mat.library.feature.book.data.remote.dto.SearchedBookDto
 import app.mat.library.feature.book.domain.model.BookModel
 import app.mat.library.feature.book.presentation.state.BookState
@@ -37,4 +38,46 @@ fun BookModel.toBookState(): BookState = BookState(
     ratingCount = ratingCount,
     pageCount = pageCount,
     editionCount = editionCount
+)
+
+fun BookState.toBookModel(): BookModel = BookModel(
+    id = id,
+    title = title,
+    imageAddress = imageAddress,
+    authorList = authorList,
+    description = null,
+    languageList = languageList,
+    firstPublishedYear = firstPublishedYear.toString(),
+    averageRating = averageRating,
+    ratingCount = ratingCount,
+    pageCount = pageCount,
+    editionCount = editionCount
+)
+
+fun BookModel.toFavoriteBookEntity(): FavoriteBookEntity = FavoriteBookEntity(
+    id = id,
+    title = title,
+    description = description,
+    imageAddress = imageAddress,
+    authorList = authorList,
+    languageList = languageList,
+    firstPublishedYear = firstPublishedYear,
+    ratingsAverage = averageRating,
+    ratingsCount = ratingCount,
+    pageCount = pageCount,
+    numEditions = editionCount
+)
+
+fun FavoriteBookEntity.toBookModel(): BookModel = BookModel(
+    id = id,
+    title = title,
+    description = description,
+    imageAddress = imageAddress,
+    authorList = authorList,
+    languageList = languageList,
+    firstPublishedYear = firstPublishedYear,
+    averageRating = ratingsAverage,
+    ratingCount = ratingsCount,
+    pageCount = pageCount,
+    editionCount = numEditions,
 )

@@ -1,6 +1,8 @@
-package app.mat.library.feature.core.presentation.component.image
+package app.mat.library.feature.core.presentation.component.container
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -19,8 +21,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -31,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
@@ -65,6 +66,20 @@ fun ImageContentTypeOneComponent(
         )
     }
 
+    var cardElevationState by remember {
+        mutableStateOf(
+            value = 0.dp
+        )
+    }
+
+    val cardElevationAnimation by animateDpAsState(
+        targetValue = cardElevationState,
+        animationSpec = tween(
+            durationMillis = 1000,
+            delayMillis = 400
+        )
+    )
+
     val painter = rememberAsyncImagePainter(
         model = imageUrlProvider(),
         onSuccess = {
@@ -73,15 +88,21 @@ fun ImageContentTypeOneComponent(
             imageLoadResult = if (size.width > 1 && size.height > 1) {
                 Result.success(
                     value = it.painter
-                )
+                ).also {
+                    cardElevationState = 20.dp
+                }
             } else {
-                Result.failure(
+                Result.failure<Painter>(
                     exception = Exception("Invalid intrinsic size: $size")
-                )
+                ).also {
+                    cardElevationState = 0.dp
+                }
             }
         },
         onError = {
             it.result.throwable.printStackTrace()
+
+            cardElevationState = 0.dp
         }
     )
 
@@ -161,23 +182,27 @@ fun ImageContentTypeOneComponent(
                     )
             )
 
-            ElevatedCard(
+            Box(
                 modifier = Modifier
                     .height(
                         height = 250.dp
                     )
                     .aspectRatio(
                         ratio = 2 / 3f
-                    ),
-                shape = RoundedCornerShape(
-                    size = 8.dp
-                ),
-                colors = CardDefaults.elevatedCardColors(
-                    containerColor = Color.Transparent
-                ),
-                elevation = CardDefaults.elevatedCardElevation(
-                    defaultElevation = 15.dp
-                )
+                    )
+                    .shadow(
+                        shape = RoundedCornerShape(
+                            size = 8.dp
+                        ),
+                        clip = cardElevationState != 0.dp,
+                        elevation = cardElevationAnimation
+                    )
+                    .background(
+                        shape = RoundedCornerShape(
+                            size = 8.dp
+                        ),
+                        color = Color.Transparent
+                    )
             ) {
                 AnimatedContent(
                     targetState = imageLoadResult,
